@@ -1,10 +1,7 @@
 const mongoose=require('mongoose')
 const UserSchema=new mongoose.Schema({
-    description:String,
-    amount:Number,
-    type:String,
-    paymentType:String,
-    date:Date
+    email:String,
+    password:String
 })
 
 const UserModel=mongoose.model("users",UserSchema)

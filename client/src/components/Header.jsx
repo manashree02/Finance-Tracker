@@ -1,7 +1,12 @@
 import React from "react";
 import { LogOut } from 'lucide-react';
+import {useNavigate} from 'react-router-dom'
 
 const Header = () => {
+  const navigate=useNavigate();
+  const logout=()=>{
+    navigate('/')
+  }
   return (
     <div className="bg-violet-700 flex justify-between items-center h-max px-4 py-2 font-sans">
       <div>
@@ -11,7 +16,7 @@ const Header = () => {
       <div className="flex gap-4">
         <div className="flex gap-1 items-center">
           <LogOut size={18}/>
-          <button>Logout</button>
+          <button onClick={logout}>Logout</button>
         </div>
         <p>manashree</p>
       </div>

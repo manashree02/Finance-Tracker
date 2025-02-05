@@ -1,29 +1,31 @@
-import React, { useState } from "react";
-import { Edit2, Trash2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { FilePenLine, Trash2 } from "lucide-react";
 import Update from "../pages/Update";
 import axios from "axios";
 
 const Entries = () => {
-  const [entries, setEntries] = useState([
-    {
-      description: "Dummy",
-      amount: "Dummy",
-      type: "Dummy",
-      paymentMethod: "Dummy",
-      date: "Dummy",
-    },
-  ]);
-
+  
   const [visibleSection, setVisibleSection] = useState({});
   const [showUpdate, setShowUpdate] = useState(false);
+ 
+  const [description,setDescription]=useState("");
+  const [amount,setAmount]=useState("");
+  const [type,setType]=useState("");
+  const [paymentMethod,setPaymentMethod]=useState("");
+  const [date,setDate]=useState("");
 
-  const [newEntry, setNewEntry] = useState({
-    description: "",
-    amount: "",
-    type: "",
-    paymentMethod: "",
-    date: "",
-  });
+  const [entries, setEntries] = useState([]);
+
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/entries")
+      .then((result) => {
+        console.log("result:",result.data)
+        setEntries(result.data); 
+      })
+      .catch((err) => console.log(err));
+  }, []); 
 
   const handleClick = (index) => {
     setVisibleSection((prevState) => ({
@@ -32,21 +34,13 @@ const Entries = () => {
     }));
   };
 
-  const handleChange = (field, value) => {
-    setNewEntry((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  };
-
   const handleAdd = (e) => {
-    e.preventDefault();
     axios
-      .post("http://localhost:3001/entries", newEntry)
+      .post("http://localhost:3001/entries", {description,amount,type,paymentMethod,date})
       .then((result) => {
-        setEntries([...entries, newEntry]); // Update state with the new entry
-        console.log(result);
-        setNewEntry({ description: "", amount: "", type: "", paymentMethod: "", date: "" }); // Reset form
+        console.log("Added data: ",result.data);
+        setEntries([...entries,result.data])
+        setDescription(""); setAmount(""); setType(""); setPaymentMethod(""); setDate("");
       })
       .catch((err) => console.log(err));
   };
@@ -59,26 +53,26 @@ const Entries = () => {
           <input
             placeholder="Description"
             className="border p-2 rounded-md"
-            value={newEntry.description}
-            onChange={(e) => handleChange("description", e.target.value)}
+            value={description}
+            onChange={(e)=>setDescription(e.target.value)}
           />
           <div className="flex flex-col lg:flex-row gap-2">
             <input
               placeholder="Amount"
               className="border p-2 rounded-md w-full"
-              value={newEntry.amount}
-              onChange={(e) => handleChange("amount", e.target.value)}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             />
             <input
               placeholder="Type"
               className="border p-2 rounded-md w-full"
-              value={newEntry.type}
-              onChange={(e) => handleChange("type", e.target.value)}
+              value={type}
+              onChange={(e) => setType(e.target.value)}
             />
             <select
               className="border p-2 rounded-md w-full"
-              value={newEntry.paymentMethod}
-              onChange={(e) => handleChange("paymentMethod", e.target.value)}
+              value={paymentMethod}
+              onChange={(e) => setPaymentMethod(e.target.value)}
             >
               <option value="" disabled>
                 Payment Type
@@ -90,8 +84,8 @@ const Entries = () => {
             <input
               type="date"
               className="border p-2 rounded-md w-full"
-              value={newEntry.date}
-              onChange={(e) => handleChange("date", e.target.value)}
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
             <button
               onClick={handleAdd}
@@ -118,10 +112,10 @@ const Entries = () => {
                     onClick={() => setShowUpdate(true)}
                     className="text-black"
                   >
-                    <Edit2 />
+                    <FilePenLine color="purple" size={18} />
                   </button>
                   <button className="text-red-500">
-                    <Trash2 />
+                    <Trash2 size={18}/>
                   </button>
                 </div>
               </div>
