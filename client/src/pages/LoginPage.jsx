@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { User, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const {login}=useContext(AuthContext);
 
   const navigate = useNavigate();
   const handleClick = () => {
@@ -17,6 +19,10 @@ const LoginPage = () => {
         setMessage(msg.data.message);
 
         if (msg.data.message === "Login Successfull") {
+          console.log('login:',email)
+          const user=email.split("@")[0];
+          console.log('user:',user)
+          login(user)
           navigate("/homepage");
         } else {
           console.log(msg.data.message);

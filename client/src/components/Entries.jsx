@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect, useContext } from "react";
 import { FilePenLine, Trash2 } from "lucide-react";
 import Update from "../pages/Update";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
 
 const Entries = () => {
-  
+  const {user}=useContext(AuthContext)
   const [visibleSection, setVisibleSection] = useState({});
   const [showUpdate, setShowUpdate] = useState(false);
  
@@ -16,16 +17,20 @@ const Entries = () => {
 
   const [entries, setEntries] = useState([]);
 
+  
+
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/entries")
-      .then((result) => {
-        console.log("result:",result.data)
-        setEntries(result.data); 
-      })
-      .catch((err) => console.log(err));
-  }, []); 
+    if (user && user._id) {
+      axios
+        .get(`http://localhost:3001/entries?userId=${user._id}`) 
+        .then((result) => {
+          console.log("User-specific entries:", result.data);
+          setEntries(result.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [user]);
 
   const handleClick = (index) => {
     setVisibleSection((prevState) => ({
@@ -35,8 +40,16 @@ const Entries = () => {
   };
 
   const handleAdd = (e) => {
+    console.log('user',user);
+    console.log('user id',user.userId);
+    
+    
+    if (!user || !user.userId) {
+      console.log("User ID is missing");
+      return;
+    }
     axios
-      .post("http://localhost:3001/entries", {description,amount,type,paymentMethod,date})
+      .post("http://localhost:3001/entries", { userId:user.userId,description,amount,type,paymentMethod,date})
       .then((result) => {
         console.log("Added data: ",result.data);
         setEntries([...entries,result.data])
@@ -63,12 +76,17 @@ const Entries = () => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
-            <input
-              placeholder="Type"
+            <select
               className="border p-2 rounded-md w-full"
               value={type}
               onChange={(e) => setType(e.target.value)}
-            />
+            >
+              <option value="" disabled>
+                Type
+              </option>
+              <option>Income</option>
+              <option>Expense</option>
+            </select>
             <select
               className="border p-2 rounded-md w-full"
               value={paymentMethod}

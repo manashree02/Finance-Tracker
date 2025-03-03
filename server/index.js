@@ -22,19 +22,43 @@ app.post("/signup", (req, res) => {
     .then((users) => res.json(users))
     .catch((err) => res.status(500).json({ error: err.message }));
 });
-app.post("/entries", (req, res) => {
-  console.log(req.body);
 
-  EntryModel.create(req.body)
-    .then((entry) => res.json(entry))
-    .catch((err) => res.status(500).json({ error: err.message }));
+app.post("/entries", async (req, res) => {
+  console.log("req.body", req.body);
+  const { userId, description, amount, type, paymentMethod, date } = req.body;
+
+  if (!userId || !description || !amount || !type || !paymentMethod || !date) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+  try {
+    const entry = await EntryModel.create({
+      userId,
+      description,
+      amount: Number(amount),
+      type,
+      paymentMethod,
+      date,
+    });
+    res.json(entry);
+  } catch (err) {
+    console.error("Database error:", err); 
+    res.status(500).json({ error: err.message });
+  }
 });
+
 app.get("/entries", (req, res) => {
-  console.log(req.body);
-  EntryModel.find()
+  const { userId } = req.query;
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+  EntryModel.find({ userId })
     .then((entries) => res.json(entries))
     .catch((err) => res.status(500).json({ error: err.message }));
 });
+
+// app.get("/enteries",(req,res)=>{
+//   EntryModel
+// })
 
 app.post("/", (req, res) => {
   const { email, password } = req.body;
