@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FilePenLine, Trash2 } from "lucide-react";
-import Update from "../pages/Update";
+
 import axios from "axios";
+import ViewEntries from "./ViewEntries";
 
 const Entries = () => {
   
@@ -13,19 +13,10 @@ const Entries = () => {
   const [type,setType]=useState("");
   const [paymentMethod,setPaymentMethod]=useState("");
   const [date,setDate]=useState("");
-
   const [entries, setEntries] = useState([]);
 
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/entries")
-      .then((result) => {
-        console.log("result:",result.data)
-        setEntries(result.data); 
-      })
-      .catch((err) => console.log(err));
-  }, []); 
+  
 
   const handleClick = (index) => {
     setVisibleSection((prevState) => ({
@@ -63,19 +54,25 @@ const Entries = () => {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
-            <input
-              placeholder="Type"
+            <select
               className="border p-2 rounded-md w-full"
               value={type}
               onChange={(e) => setType(e.target.value)}
-            />
+            >
+               <option value="" disabled>
+                Payment Type
+              </option>
+              <option>Expense</option>
+              <option>Income</option>
+            </select>
+
             <select
               className="border p-2 rounded-md w-full"
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
             >
               <option value="" disabled>
-                Payment Type
+                Payment Method
               </option>
               <option>Online Payment</option>
               <option>Cash</option>
@@ -95,46 +92,10 @@ const Entries = () => {
             </button>
           </div>
         </div>
-
-        <div className="mt-6">
-          <p className="text-2xl font-semibold mb-4">Expenses</p>
-          {entries.map((entry, index) => (
-            <div key={index} className="border p-4 rounded-md shadow-sm mb-3">
-              <div className="flex justify-between items-center">
-                <p
-                  className="cursor-pointer w-full"
-                  onClick={() => handleClick(index)}
-                >
-                  {entry.description}
-                </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowUpdate(true)}
-                    className="text-black"
-                  >
-                    <FilePenLine color="purple" size={18} />
-                  </button>
-                  <button className="text-red-500">
-                    <Trash2 size={18}/>
-                  </button>
-                </div>
-              </div>
-
-              {visibleSection[index] && (
-                <div className="mt-2 text-gray-600">
-                  <p>Amount: {entry.amount}</p>
-                  <p>Type: {entry.type}</p>
-                  <p>Payment Method: {entry.paymentMethod}</p>
-                  <p>Date: {entry.date}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+        <ViewEntries/>
       </div>
 
-      {/* Modal Overlay */}
-      {showUpdate && <Update closeUpdate={() => setShowUpdate(false)} />}
+      
     </div>
   );
 };
