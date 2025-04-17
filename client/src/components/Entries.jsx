@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useContext } from "react";
 import { FilePenLine, Trash2 } from "lucide-react";
-import Update from "../pages/Update";
+import Update from "../pages/Detail";
 import ViewEntries from "./ViewEntries";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";

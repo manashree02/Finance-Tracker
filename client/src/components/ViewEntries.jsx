@@ -1,13 +1,16 @@
-import React,{useEffect,useState} from 'react'
+import React,{useContext, useEffect,useState} from 'react'
 import axios from "axios";
 import { FilePenLine, Trash2 } from "lucide-react";
 import Entries from './Entries';
-import Update from "../pages/Update";
+import Detail from "../pages/Detail";
+import { AuthContext } from '../context/AuthContext';
 
 const ViewEntries = () => {
     const [visibleSection, setVisibleSection] = useState({});
     const [entries, setEntries] = useState([]);
-    const [showUpdate, setShowUpdate] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
+    const {entryId,setEntryId}=useContext(AuthContext);
+    
     
       useEffect(() => {
         const fetchDataEntries = async () => {
@@ -25,6 +28,15 @@ const ViewEntries = () => {
       fetchDataEntries();
     }, []); 
 
+    const handleClick=(index) => {
+      setEntryId(entries[index]._id);
+      setShowDetails(true)
+    }
+
+    const closeModel=()=>{
+      setShowDetails(false);
+    }
+
   return (
     <div className="mt-6">
           <p className="text-2xl font-semibold mb-4">Expenses</p>
@@ -37,13 +49,7 @@ const ViewEntries = () => {
                 >
                   {entry.description}
                 </p>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowUpdate(true)}
-                    className="text-black"
-                  >
-                    <FilePenLine color="purple" size={18} />
-                  </button>
+                <div className="flex gap-3">     
                   <button className="text-red-500">
                     <Trash2 size={18}/>
                   </button>
@@ -61,7 +67,7 @@ const ViewEntries = () => {
             </div>
           ))}
           {/* Modal Overlay */}
-      {showUpdate && <Update closeUpdate={() => setShowUpdate(false)} />}
+      {showDetails && <Detail closeUpdate={() => setShowDetails(false)} />}
         </div>
   )
 }

@@ -47,6 +47,7 @@ app.post("/entries", async (req, res) => {
 });
 
 app.get("/entries", async(req, res) => {
+  console.log("req.query", req.query);
   const { userId } = req.query;
   if (!userId) {
     return res.status(400).json({ error: "User ID is required" });
@@ -54,6 +55,38 @@ app.get("/entries", async(req, res) => {
   EntryModel.find({ userId })
     .then((entries) => res.json(entries))
     .catch((err) => res.status(500).json({ error: err.message }));
+});
+
+app.get("/detail", async(req, res) => {
+  console.log("req.query", req.query);
+  const { entryId } = req.query;
+  if (!entryId) {
+    return res.status(400).json({ error: "Expense Entry not found!" });
+  }
+  try {
+    const entry = await EntryModel.findById(entryId);
+    if (!entry) {
+      return res.status(404).json({ error: "No entry found!" });
+    }
+    res.json(entry);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put("/detail/:entryId",async(req,res)=>{
+  try{
+    const {entryId}=req.params;
+    const updatedData=req.body;
+    const result=await EntryModel.findByIdAndUpdate(entryId,updatedData,{new:true});
+    if(!result){
+      return res.status(404).json({message:"No entry found!"})
+    }
+    res.json({message:"Updated successfully!",data:result});
+  }
+  catch(err){
+    res.status(500).json({error:"Database error"})
+  }
 });
 
 app.get("/user/:id", async(req,res)=>{
