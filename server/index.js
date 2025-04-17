@@ -82,11 +82,13 @@ app.post("/", (req, res) => {
       if (password !== user.password) {
         return res.status(400).json({ message: "Invalid credentials" });
       }
-      res.json({ message: "Login Successfull" });
+      res.json({ message: "Login Successfull",
+        userId:user._id
+       });
     })
     .catch((err) => res.json({ error: "Database error" }));
 });
 
 app.listen(3001, () => {
-  console.log("server is runningnon http://localhost:3001");
+  console.log("server is running on http://localhost:3001");
 });

@@ -19,6 +19,7 @@ const LoginPage = () => {
         setMessage(msg.data.message);
 
         if (msg.data.message === "Login Successfull") {
+          localStorage.setItem("userid", msg.data.userId);
           console.log('login:',email)
           const user=email.split("@")[0];
           console.log('user:',user)
