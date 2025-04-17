@@ -41,11 +41,10 @@ const Header = () => {
         <p className="font-semibold text-xl">Tracker</p>
       </div>
       <div className="flex gap-4">
-        <div className="flex gap-1 items-center">
-          <LogOut size={18}/>
-          <button onClick={handleClick}>Logout</button>
+        <p className="hover:scale-105 transition-all">{username}</p>
+        <div className="flex gap-1 items-center" onClick={handleClick}>
+          <LogOut size={22} className="cursor-pointer hover:scale-125 transition-all" />
         </div>
-        <p>{username}</p>
       </div>
     </div>
   );
