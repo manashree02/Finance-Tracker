@@ -6,34 +6,36 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
 const Entries = () => {
-  const {user}=useContext(AuthContext)
+  //const {user}=useContext(AuthContext)
   const [visibleSection, setVisibleSection] = useState({});
   const [showUpdate, setShowUpdate] = useState(false);
- 
-  const [description,setDescription]=useState("");
-  const [amount,setAmount]=useState("");
-  const [type,setType]=useState("");
-  const [paymentMethod,setPaymentMethod]=useState("");
-  const [date,setDate]=useState("");
-  const [entries, setEntries] = useState([]);
-   useEffect(()=>{
-    console.log("user : ",user);
-    
-   })
-  
+  const [userId, setUserId] = useState("");
 
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [type, setType] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [date, setDate] = useState("");
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    if (user && user._id) {
-      axios
-        .get(`http://localhost:3001/entries?userId=${user._id}`) 
-        .then((result) => {
-          console.log("User-specific entries:", result.data);
-          setEntries(result.data);
-        })
-        .catch((err) => console.log(err));
-    }
-  }, [user]);
+    const fetchDataEntries = async () => {
+      try {
+        const userId = localStorage.getItem("userid");
+        setUserId(userId);
+
+        const response = await axios.get(
+          `http://localhost:3001/entries?userId=${userId}`
+        );
+
+        console.log("User-specific entries:", response.data);
+        setEntries(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchDataEntries();
+  }, [userId]);
 
   const handleClick = (index) => {
     setVisibleSection((prevState) => ({
@@ -43,20 +45,27 @@ const Entries = () => {
   };
 
   const handleAdd = (e) => {
-    console.log('user',user);
-    console.log('user id',user.userId);
-    
-    
-    if (!user || !user.userId) {
+    if (!userId) {
       console.log("User ID is missing");
       return;
     }
     axios
-      .post("http://localhost:3001/entries", { userId:user.userId,description,amount,type,paymentMethod,date})
+      .post("http://localhost:3001/entries", {
+        userId: userId,
+        description,
+        amount,
+        type,
+        paymentMethod,
+        date,
+      })
       .then((result) => {
-        console.log("Added data: ",result.data);
-        setEntries([...entries,result.data])
-        setDescription(""); setAmount(""); setType(""); setPaymentMethod(""); setDate("");
+        console.log("Added data: ", result.data);
+        setEntries([...entries, result.data]);
+        setDescription("");
+        setAmount("");
+        setType("");
+        setPaymentMethod("");
+        setDate("");
       })
       .catch((err) => console.log(err));
   };
@@ -70,7 +79,7 @@ const Entries = () => {
             placeholder="Description"
             className="border p-2 rounded-md"
             value={description}
-            onChange={(e)=>setDescription(e.target.value)}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <div className="flex flex-col lg:flex-row gap-2">
             <input
@@ -116,10 +125,8 @@ const Entries = () => {
             </button>
           </div>
         </div>
-        <ViewEntries/>
+        <ViewEntries />
       </div>
-
-      
     </div>
   );
 };

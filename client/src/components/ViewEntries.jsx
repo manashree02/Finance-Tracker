@@ -10,14 +10,20 @@ const ViewEntries = () => {
     const [showUpdate, setShowUpdate] = useState(false);
     
       useEffect(() => {
-        axios
-          .get("http://localhost:3001/entries")
-          .then((result) => {
-            console.log("result:",result.data)
-            setEntries(result.data); 
-          })
-          .catch((err) => console.log(err));
-      }, [Entries]); 
+        const fetchDataEntries = async () => {
+          const userId=localStorage.getItem('userid');
+          console.log("userId",userId);
+        try{
+        const response=await axios.get(`http://localhost:3001/entries?userId=${userId}`)
+        console.log("response:",response.data)
+        setEntries(response.data); 
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+      fetchDataEntries();
+    }, []); 
 
   return (
     <div className="mt-6">

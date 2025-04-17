@@ -1,22 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { LogOut } from 'lucide-react';
 import {useNavigate} from 'react-router-dom'
 import { AuthContext } from "../context/AuthContext";
-import { useContext } from "react";
+import axios from "axios";
 
 const Header = () => {
-  const {user,logout}=useContext(AuthContext);
+  const {logout}=useContext(AuthContext);
   const [username,setUserName]=useState("")
 
   useEffect(() => {
-    if (user && user.username) {
-      setUserName(user.username); 
-    }
-  }, [user]); 
 
-  useEffect(() => {
+    const fetchUserName=async()=>{
+      try{
+        const userId=localStorage.getItem('userid');
+        if (!userId) return;
+        const response=await axios.get(`http://localhost:3001/user/${userId}`);
+        console.log("responce : ",response.data);
+        const email=response.data.username;
+        const name=email.split('@')[0];
+        setUserName(name);
+      }
+      catch(err){
+        console.log(err);
+      }
+    }
+    fetchUserName();
     console.log('header : ', username); 
-  }, [username]);
+  }, []);
 
   const navigate=useNavigate();
   const handleClick=()=>{

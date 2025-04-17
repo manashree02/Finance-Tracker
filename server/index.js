@@ -26,7 +26,7 @@ app.post("/signup", (req, res) => {
 app.post("/entries", async (req, res) => {
   console.log("req.body", req.body);
   const { userId, description, amount, type, paymentMethod, date } = req.body;
-
+  console.log(req.body);
   if (!userId || !description || !amount || !type || !paymentMethod || !date) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -46,7 +46,7 @@ app.post("/entries", async (req, res) => {
   }
 });
 
-app.get("/entries", (req, res) => {
+app.get("/entries", async(req, res) => {
   const { userId } = req.query;
   if (!userId) {
     return res.status(400).json({ error: "User ID is required" });
@@ -56,9 +56,21 @@ app.get("/entries", (req, res) => {
     .catch((err) => res.status(500).json({ error: err.message }));
 });
 
-// app.get("/enteries",(req,res)=>{
-//   EntryModel
-// })
+app.get("/user/:id", async(req,res)=>{
+  try{
+    const user=await UserModel.findById(req.params.id);
+    if(!user){
+      return res.status(404).json({error:"User not found"})
+    }
+    res.json({username:user.email})
+  }
+    catch(err){
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+
+;
 
 app.post("/", (req, res) => {
   const { email, password } = req.body;
