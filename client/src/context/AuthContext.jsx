@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const login = (username) => {
     const userId = uuidv4();  
     setUser({ username, userId });
+    
   };
 
   const logout = () => {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useContext } from "react";
 import { FilePenLine, Trash2 } from "lucide-react";
 import Update from "../pages/Update";
+import ViewEntries from "./ViewEntries";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 
@@ -15,7 +16,10 @@ const Entries = () => {
   const [paymentMethod,setPaymentMethod]=useState("");
   const [date,setDate]=useState("");
   const [entries, setEntries] = useState([]);
-
+   useEffect(()=>{
+    console.log("user : ",user);
+    
+   })
   
 
 
