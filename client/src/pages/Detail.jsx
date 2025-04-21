@@ -20,7 +20,7 @@ const Detail = ({ closeUpdate}) => {
       }
     }
     updateData();
-  })
+  },[detail]);
 
   useEffect(() => {
     const fetchDataEntries = async () => {

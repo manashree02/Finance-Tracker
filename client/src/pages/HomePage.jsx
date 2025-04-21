@@ -4,7 +4,7 @@ import Entries from '../components/Entries'
 const HomePage = () => {
   return (
     <div
-    className='rounded-xl p-4'>
+    className='rounded-xl p-4 [min-width:445px]'>
         <Entries/>
     </div>
   )

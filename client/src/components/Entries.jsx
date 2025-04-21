@@ -35,7 +35,7 @@ const Entries = () => {
       }
     };
     fetchDataEntries();
-  }, [userId]);
+  }, [userId,entries]);
 
   const handleClick = (index) => {
     setVisibleSection((prevState) => ({
@@ -72,8 +72,7 @@ const Entries = () => {
 
   return (
     <div className="p-6 relative">
-      {/* Background Blur Effect When Modal Opens */}
-      <div className={`${showUpdate ? "blur-sm pointer-events-none" : ""}`}>
+      <div>
         <div className="flex flex-col gap-4 max-w-3xl mx-auto">
           <input
             placeholder="Description"
@@ -117,9 +116,12 @@ const Entries = () => {
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
-            <button
+            
+          </div>
+          <div className="flex justify-center">
+          <button
               onClick={handleAdd}
-              className="bg-gray-200 px-6 py-2 rounded-md hover:bg-gray-300"
+              className="bg-violet-700 px-14 py-2 rounded-md w-full mt-6 hover:bg-violet-500 text-white"
             >
               Add
             </button>

@@ -40,10 +40,10 @@ const Header = () => {
         <p className="text-4xl font-semibold">Expense</p>
         <p className="font-semibold text-xl">Tracker</p>
       </div>
-      <div className="flex gap-4">
-        <p className="hover:scale-105 transition-all">{username}</p>
+      <div className="flex gap-4 text-white">
+        <p><span className="text-xl">Welcome, </span>{username}</p>
         <div className="flex gap-1 items-center" onClick={handleClick}>
-          <LogOut size={22} className="cursor-pointer hover:scale-125 transition-all" />
+          <LogOut size={22} className="cursor-pointer hover:scale-125 transition-all text-black" />
         </div>
       </div>
     </div>
