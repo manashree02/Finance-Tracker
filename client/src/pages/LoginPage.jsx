@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { User, Eye, LockKeyhole } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { use } from "react";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +12,15 @@ const LoginPage = () => {
   const [message, setMessage] = useState("");
   const [loginText, setLoginText] = useState("Login");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const {login}=useContext(AuthContext);
+
+  useEffect(()=>{
+    console.log("Isloggedin:",isLoggedIn);
+    console.log("LoginText:",loginText);
+    console.log("Message:",message);
+    console.log("LoginError:",loginError);
+  },[isLoggedIn,loginText,message,loginError])
 
   const navigate = useNavigate();
   const handleClick = () => {
@@ -21,6 +30,7 @@ const LoginPage = () => {
         setMessage(msg.data.message);
 
         if (msg.data.message === "Login Successfull") {
+          setLoginText("Redirecting...");
           localStorage.setItem("userid", msg.data.userId);
           console.log('login:',email)
           const user=email.split("@")[0];
@@ -33,11 +43,15 @@ const LoginPage = () => {
           setTimeout(()=>{
             navigate("/homepage");
           },2000);
-        } else {
-          console.log(msg.data.message);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) =>{ console.log(err);
+        setLoginError(true)
+        setMessage("Login Failed. Please try again.");
+        setTimeout(() => {
+          setLoginError(false);
+        },2000);
+      });
   };
 
   return (
@@ -68,7 +82,7 @@ const LoginPage = () => {
             onClick={handleClick}
             className="bg-purple-700 rounded-lg text-lg cursor-pointer mt-8 hover:bg-purple-800 py-3 text-white w-full"
           >
-           {login ? "Login" : "Sign In"}
+           {loginText? loginText : "Login"}
           </button>
           <p className="w-full flex justify-end gap-2 ">
             Dont have an account?{" "}
@@ -81,6 +95,11 @@ const LoginPage = () => {
       {isLoggedIn && (
         <div className="fixed top-4 px-10 rounded-lg items-center justify-center h-10 flex bg-green-600 opacity-80 transition-transform text-white p-4 m-4 shadow-lg">
           Login Successfull!
+        </div>  
+      )}
+      {loginError && (
+        <div className={`fixed top-4 px-10 rounded-lg items-center justify-center h-10 flex ${message==="Login Successfull"?"bg-green-600":"bg-red-600"} opacity-80 transition-transform text-white p-4 m-4 shadow-lg`}>
+          Login Failed!
         </div>  
       )}
     </div>
